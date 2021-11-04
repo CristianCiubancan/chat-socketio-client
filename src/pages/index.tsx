@@ -30,7 +30,7 @@ const Index = () => {
       {!data && loading ? (
         <Flex
           flex={1}
-          height={"80vh"}
+          height={"81vh"}
           justifyContent="center"
           alignItems="center">
           <Spinner color="teal.800" />

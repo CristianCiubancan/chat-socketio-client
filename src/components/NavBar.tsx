@@ -35,6 +35,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
             const data = await logoutOp();
             console.log(data);
             if (data) {
+              localStorage.removeItem("CurrentUser");
               router.reload();
             }
           }}

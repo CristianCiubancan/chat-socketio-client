@@ -21,12 +21,27 @@ const Index = () => {
   const { data, loading } = usersOp();
   const server = isServer();
 
+  const handleSendMessage = () => {
+    socket?.emit("message", { message: "haidai ba" });
+  };
+
   let currentUser = !server
     ? JSON.parse(localStorage.getItem("CurrentUser")!)
     : undefined;
 
+  useEffect(() => {
+    socket?.on("new-message", (message) => {
+      console.log(message.message);
+    });
+
+    return () => {
+      socket?.off("new-message");
+    };
+  });
+
   return (
     <Layout>
+      <Button onClick={handleSendMessage}>send message</Button>
       {!data && loading ? (
         <Flex
           flex={1}

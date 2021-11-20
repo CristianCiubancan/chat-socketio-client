@@ -10,6 +10,7 @@ import FetchUserNotifications from "../operations/user/fetchNotifications";
 import { setNotifications } from "../redux/features/notifications/notificationsSlice";
 import { SocketContext, socket } from "../utils/SocketContext";
 import { ReloadOnIdle } from "../utils/reloadOnIdle";
+import NextNprogress from "nextjs-progressbar";
 
 const GlobalStyle = ({ children }: any) => {
   return (
@@ -48,6 +49,14 @@ function MyApp({ Component, pageProps }: AppProps) {
               href="/favicon-16x16.png"
             />
           </Head>
+          <NextNprogress
+            color="#F387B3"
+            startPosition={0.3}
+            stopDelayMs={200}
+            height={3}
+            showOnShallow={true}
+            options={{ showSpinner: false }}
+          />
           <Component {...pageProps} />
         </SocketContext.Provider>
       </GlobalStyle>

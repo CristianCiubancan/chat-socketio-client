@@ -1,4 +1,4 @@
-const registerOp = async (values: any) => {
+const RegisterOperation = async (values: any) => {
   const response: any = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL as string}/register`,
     {
@@ -10,7 +10,12 @@ const registerOp = async (values: any) => {
   );
 
   const data = await response.json();
+
+  if (data.error) {
+    throw new Error(data.error);
+  }
+
   return data;
 };
 
-export default registerOp;
+export default RegisterOperation;

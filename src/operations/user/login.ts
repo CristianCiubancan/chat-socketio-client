@@ -1,4 +1,4 @@
-const loginOp = async (values: any) => {
+const LoginOperation = async (values: any) => {
   const response: any = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL as string}/login`,
     {
@@ -10,7 +10,12 @@ const loginOp = async (values: any) => {
   );
 
   const data = await response.json();
+
+  if (data.error) {
+    throw new Error(data.error);
+  }
+
   return data;
 };
 
-export default loginOp;
+export default LoginOperation;

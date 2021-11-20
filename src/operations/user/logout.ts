@@ -1,4 +1,4 @@
-const logoutOp = async () => {
+const LogoutOperation = async () => {
   const response: any = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL as string}/logout`,
     {
@@ -12,4 +12,4 @@ const logoutOp = async () => {
   return data;
 };
 
-export default logoutOp;
+export default LogoutOperation;

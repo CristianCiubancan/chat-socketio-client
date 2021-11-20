@@ -4,7 +4,8 @@ import { Box, Button } from "@chakra-ui/react";
 import InputField from "../components/InputField";
 import { toErrorMap } from "../utils/toErrorMap";
 import Layout from "../components/Layout";
-import registerOp from "../operations/register";
+import RegisterOperation from "../operations/user/register";
+import { setUser } from "../redux/features/user/userSlice";
 
 interface registerProps {}
 
@@ -14,11 +15,11 @@ const Register: React.FC<registerProps> = ({}) => {
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const data = await registerOp(values);
+          const data = await RegisterOperation(values);
           if (data.errors) {
             setErrors(toErrorMap(data.errors));
           } else if (data.user) {
-            localStorage.setItem("CurrentUser", JSON.stringify(data.user));
+            setUser(data.user);
             window.location.href = "/";
           }
         }}>

@@ -6,8 +6,7 @@ export const ReloadOnIdle = () => {
 
   const handleOnIdle = () => {
     if (!document.hidden) {
-      router.replace(router.asPath);
-      console.log("refreshed");
+      router.reload();
     }
   };
 

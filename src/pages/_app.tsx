@@ -9,6 +9,7 @@ import { Global, css } from "@emotion/react";
 import FetchUserNotifications from "../operations/user/fetchNotifications";
 import { setNotifications } from "../redux/features/notifications/notificationsSlice";
 import { SocketContext, socket } from "../utils/SocketContext";
+import { ReloadOnIdle } from "../utils/reloadOnIdle";
 
 const GlobalStyle = ({ children }: any) => {
   return (
@@ -32,6 +33,8 @@ const GlobalStyle = ({ children }: any) => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
+  ReloadOnIdle();
+
   return (
     <ChakraProvider>
       <GlobalStyle>

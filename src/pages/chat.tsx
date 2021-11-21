@@ -4,17 +4,24 @@ import CardsList from "../components/cardsList";
 import Layout from "../components/Layout";
 import FetchUserChats from "../operations/chat/userChats";
 import { setChats } from "../redux/features/userChats/userChatsSlice";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { wrapper } from "../redux/store";
 import { getScreenSize } from "../utils/getScreenSize";
+import { RefetchOnIdle } from "../utils/refetchOnIdle";
 
 const Chat = ({}: any) => {
   const windowSize = getScreenSize();
+  const dispatch = useAppDispatch();
 
   const {
     user: { value: currentUser },
     chats: { value: chats },
   } = useAppSelector((state) => state);
+
+  RefetchOnIdle(async () => {
+    const chats = await FetchUserChats();
+    dispatch(setChats(chats));
+  });
 
   if (windowSize.width === 0 && windowSize.height === 0) {
     return <Layout></Layout>;

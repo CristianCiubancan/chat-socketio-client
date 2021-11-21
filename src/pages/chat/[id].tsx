@@ -17,10 +17,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { wrapper } from "../../redux/store";
 import { getScreenSize } from "../../utils/getScreenSize";
+import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 
 const Chat = () => {
   const windowSize = getScreenSize();
   const dispatch = useAppDispatch();
+
   const {
     chats: { value: chats },
     chat: { value: chatData },
@@ -59,6 +61,13 @@ const Chat = () => {
       </Layout>
     );
   }
+
+  RefetchOnIdle(async () => {
+    const chats = await FetchUserChats();
+    dispatch(setChats(chats));
+    const messages = await FetchMessages(null, chatData.id);
+    dispatch(setChatMessages(messages));
+  });
 
   return (
     <Layout>

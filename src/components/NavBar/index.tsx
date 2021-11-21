@@ -7,11 +7,16 @@ import { MobileNavBar } from "./mobileNavBar";
 import { Notifications } from "./notifications";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { SocketContext } from "../../utils/SocketContext";
-import { newNotification } from "../../redux/features/notifications/notificationsSlice";
+import {
+  newNotification,
+  setNotifications,
+} from "../../redux/features/notifications/notificationsSlice";
 import { useRouter } from "next/router";
 import ReadMessageOperation from "../../operations/message/readMessage";
 import { sendNewMessage } from "../../redux/features/chatMessages/chatMessagesSlice";
 import { newChatMessageReceived } from "../../redux/features/userChats/userChatsSlice";
+import { RefetchOnIdle } from "../../utils/refetchOnIdle";
+import FetchUserNotifications from "../../operations/user/fetchNotifications";
 
 interface NavBarProps {}
 
@@ -26,6 +31,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     user: { value: currentUser },
     notifications: { value: notifications },
   } = useAppSelector((state) => state);
+
+  RefetchOnIdle(async () => {
+    const notifications = await FetchUserNotifications();
+    dispatch(setNotifications(notifications));
+  });
 
   useEffect(() => {
     socketClient?.on("new-message", async (message) => {

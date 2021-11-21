@@ -33,8 +33,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   } = useAppSelector((state) => state);
 
   RefetchOnIdle(async () => {
-    const notifications = await FetchUserNotifications();
-    dispatch(setNotifications(notifications));
+    if (router.query.id) {
+    } else {
+      const notifications = await FetchUserNotifications();
+      dispatch(setNotifications(notifications));
+    }
   });
 
   useEffect(() => {

@@ -7,8 +7,12 @@ import FetchUserChat from "../../operations/chat/userChat";
 import FetchUserChats from "../../operations/chat/userChats";
 import FetchMessages from "../../operations/message/fetchMessages";
 import ReadMessageOperation from "../../operations/message/readMessage";
+import FetchUserNotifications from "../../operations/user/fetchNotifications";
 import { setChatMessages } from "../../redux/features/chatMessages/chatMessagesSlice";
-import { removeNotifications } from "../../redux/features/notifications/notificationsSlice";
+import {
+  removeNotifications,
+  setNotifications,
+} from "../../redux/features/notifications/notificationsSlice";
 import { setChat } from "../../redux/features/userChat/userChatSlice";
 import {
   readChat,
@@ -33,10 +37,16 @@ const Chat = () => {
   RefetchOnIdle(async () => {
     if (!currentUser || currentUser.id === 0) {
     } else {
-      const chats = await FetchUserChats();
-      dispatch(setChats(chats));
       const messages = await FetchMessages(null, chatData.id);
       dispatch(setChatMessages(messages));
+
+      await ReadMessageOperation(messages.messages[0].id);
+
+      const notifications = await FetchUserNotifications();
+      dispatch(setNotifications(notifications));
+
+      const chats = await FetchUserChats();
+      dispatch(setChats(chats));
     }
   });
 

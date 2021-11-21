@@ -41,11 +41,11 @@ const MessageInput: React.FC<MessageInputProps> = () => {
       onSubmit={async (values, actions) => {
         if (values.message !== "") {
           const data = await SendMessageOperation(chat.id, values.message);
+          actions.resetForm();
           dispatch(sendNewMessage(data));
           dispatch(newMessageSentToChat({ message: data, chat }));
           handleSendMessage(data);
         }
-        actions.resetForm();
       }}>
       {({ isSubmitting }) =>
         false ? (

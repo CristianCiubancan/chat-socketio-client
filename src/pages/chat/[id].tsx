@@ -30,6 +30,16 @@ const Chat = () => {
     chatMessages: { value: chatMessages },
   } = useAppSelector((state) => state);
 
+  RefetchOnIdle(async () => {
+    if (!currentUser || currentUser.id === 0) {
+    } else {
+      const chats = await FetchUserChats();
+      dispatch(setChats(chats));
+      const messages = await FetchMessages(null, chatData.id);
+      dispatch(setChatMessages(messages));
+    }
+  });
+
   useEffect(() => {
     if (currentUser.id && currentUser.id !== 0) {
       if (chatMessages.messages[0]) {
@@ -61,13 +71,6 @@ const Chat = () => {
       </Layout>
     );
   }
-
-  RefetchOnIdle(async () => {
-    const chats = await FetchUserChats();
-    dispatch(setChats(chats));
-    const messages = await FetchMessages(null, chatData.id);
-    dispatch(setChatMessages(messages));
-  });
 
   return (
     <Layout>

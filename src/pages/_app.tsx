@@ -70,7 +70,7 @@ MyApp.getInitialProps = wrapper.getInitialPageProps(
       const actualCookie = cookie === undefined ? null : `qid=${cookie}`;
       store.dispatch(getCookie(actualCookie));
 
-      if (cookie) {
+      if (actualCookie) {
         if (notifications.value[0]?.chatId === 0) {
           const notificationsResponse = await FetchUserNotifications(
             actualCookie

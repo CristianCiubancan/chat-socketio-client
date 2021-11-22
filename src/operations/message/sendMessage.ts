@@ -11,10 +11,6 @@ const SendMessageOperation = async (chatId: number, text: string) => {
 
   const data = await response.json();
 
-  if (data.error) {
-    throw new Error(data.error);
-  }
-
   return data;
 };
 

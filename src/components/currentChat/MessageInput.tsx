@@ -44,6 +44,7 @@ const MessageInput: React.FC<MessageInputProps> = () => {
       onSubmit={async (values, actions) => {
         if (values.message !== "") {
           const data = await SendMessageOperation(chat.id, values.message);
+
           if (data.error && data.error === "not authenticated") {
             dispatch(setUserAsGuest());
             router.push("/login");

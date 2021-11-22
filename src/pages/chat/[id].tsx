@@ -145,7 +145,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 
     if (
-      currentState.chats.value.chats &&
+      currentState.chats.value.chats[0] &&
       currentState.chats.value.chats[0].id === 0
     ) {
       const response = await FetchUserChats(cookie ? cookie : null);

@@ -36,7 +36,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context: any) => {
     const cookie = context.req.headers.cookie;
     const currentState = store.getState();
-    if (currentState.users.value.users[0].id === 0) {
+    if (
+      currentState.users.value.users[0] &&
+      currentState.users.value.users[0].id === 0
+    ) {
       const response = await FetchUsers(cookie ? cookie : null);
       if (!response.error) {
         await store.dispatch(setUsers(response));

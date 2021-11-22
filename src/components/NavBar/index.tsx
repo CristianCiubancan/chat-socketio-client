@@ -37,20 +37,26 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   RefetchOnIdle(async () => {
     if (router.query.id) {
     } else {
-      const notifications = await FetchUserNotifications();
-      if (notifications.error && notifications.error === "not authenticated") {
-        dispatch(setUserAsGuest());
-        router.push("/login");
+      if (currentUser.id && currentUser.id !== 0) {
+        const notifications = await FetchUserNotifications();
+        if (
+          notifications.error &&
+          notifications.error === "not authenticated"
+        ) {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        }
+        dispatch(setNotifications(notifications));
       }
-      dispatch(setNotifications(notifications));
     }
   });
 
-  const actualNotifications = notifications
-    ? notifications.filter(
-        (notification: Notification) => notification.chatId !== 0
-      )
-    : [];
+  const actualNotifications =
+    notifications && currentUser.id && currentUser.id !== 0
+      ? notifications.filter(
+          (notification: Notification) => notification.chatId !== 0
+        )
+      : [];
 
   useEffect(() => {
     socketClient?.on("new-message", async (message) => {

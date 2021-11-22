@@ -2,16 +2,10 @@ import { ChatIcon } from "@chakra-ui/icons";
 import { Button, Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
+import { Notification } from "../../redux/features/notifications/notificationsSlice";
 
 interface NotificationsProps {
-  notificationsData:
-    | {
-        __typename?: "NotificationPublish" | undefined;
-        chatId: number;
-        messageId: number;
-      }[]
-    | null
-    | undefined;
+  notificationsData: Notification[] | null | undefined;
 }
 
 export const Notifications: React.FC<NotificationsProps> = ({

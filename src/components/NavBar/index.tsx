@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { SocketContext } from "../../utils/SocketContext";
 import {
   newNotification,
+  Notification,
   setNotifications,
 } from "../../redux/features/notifications/notificationsSlice";
 import { useRouter } from "next/router";
@@ -41,7 +42,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   });
 
   const actualNotifications = notifications
-    ? notifications.filter((notification) => notification.chatId !== 0)
+    ? notifications.filter(
+        (notification: Notification) => notification.chatId !== 0
+      )
     : [];
 
   useEffect(() => {

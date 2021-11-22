@@ -37,6 +37,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const cookie = context.req.headers.cookie;
     const currentState = store.getState();
     if (
+      currentState.users.value.users &&
       currentState.users.value.users[0] &&
       currentState.users.value.users[0].id === 0
     ) {

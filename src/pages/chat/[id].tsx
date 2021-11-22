@@ -72,7 +72,7 @@ const Chat = () => {
     return <Layout></Layout>;
   }
 
-  if (!currentUser || currentUser.id === 0) {
+  if (!currentUser.id || currentUser.id === 0) {
     return (
       <Layout>
         <Box textAlign="center">

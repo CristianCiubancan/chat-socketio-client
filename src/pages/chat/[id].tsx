@@ -1,4 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import CardsList from "../../components/cardsList";
 import CurrentChat from "../../components/currentChat";
@@ -13,6 +14,7 @@ import {
   removeNotifications,
   setNotifications,
 } from "../../redux/features/notifications/notificationsSlice";
+import { setUserAsGuest } from "../../redux/features/user/userSlice";
 import { setChat } from "../../redux/features/userChat/userChatSlice";
 import {
   readChat,
@@ -26,7 +28,7 @@ import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 const Chat = () => {
   const windowSize = getScreenSize();
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   const {
     chats: { value: chats },
     chat: { value: chatData },
@@ -40,15 +42,42 @@ const Chat = () => {
       const messages = await FetchMessages(null, chatData.id);
       dispatch(setChatMessages(messages));
 
-      await ReadMessageOperation(messages.messages[0].id);
+      const response = await ReadMessageOperation(messages.messages[0].id);
+      if (response.error && response.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      } else {
+        const notifications = await FetchUserNotifications();
+        if (
+          notifications.error &&
+          notifications.error === "not authenticated"
+        ) {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        }
+        dispatch(setNotifications(notifications));
 
-      const notifications = await FetchUserNotifications();
-      dispatch(setNotifications(notifications));
-
-      const chats = await FetchUserChats();
-      dispatch(setChats(chats));
+        const chats = await FetchUserChats();
+        if (chats.error && chats.error === "not authenticated") {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        } else {
+          dispatch(setChats(chats));
+        }
+      }
     }
   });
+
+  const handleReadMessage = async (messageId: number) => {
+    const response = await ReadMessageOperation(messageId);
+    if (response.error && response.error === "not authenticated") {
+      dispatch(setUserAsGuest());
+      router.push("/login");
+    } else {
+      dispatch(readChat({ chatId: chatData.id, userId: currentUser.id }));
+      dispatch(removeNotifications({ chatId: chatData.id }));
+    }
+  };
 
   useEffect(() => {
     if (currentUser.id && currentUser.id !== 0) {
@@ -60,9 +89,7 @@ const Chat = () => {
           }
         }
         if (isChatRead === false) {
-          ReadMessageOperation(chatMessages.messages[0].id);
-          dispatch(readChat({ chatId: chatData.id, userId: currentUser.id }));
-          dispatch(removeNotifications({ chatId: chatData.id }));
+          handleReadMessage(chatMessages.messages[0].id);
         }
       }
     }
@@ -150,7 +177,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       currentState.chats.value.chats[0].id === 0
     ) {
       const response = await FetchUserChats(cookie ? cookie : null);
-      if (!response.error) {
+      if (response.error && response.error === "not authenticated") {
+        store.dispatch(setUserAsGuest());
+      } else {
         await store.dispatch(setChats(response));
       }
     }

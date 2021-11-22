@@ -1,6 +1,8 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import FetchUserChats from "../operations/chat/userChats";
+import { setUserAsGuest } from "../redux/features/user/userSlice";
 import { setChats } from "../redux/features/userChats/userChatsSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { WindowSizeState } from "../utils/getScreenSize";
@@ -26,10 +28,14 @@ const CardsList: React.FC<CardsListProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const currentState = useAppSelector((state) => state);
+  const router = useRouter();
+
   const handleChatsUpdate = async () => {
     const response = await FetchUserChats();
-
-    if (
+    if (response.error && response.error === "not authenticated") {
+      dispatch(setUserAsGuest());
+      router.push("/login");
+    } else if (
       JSON.stringify(response.chats[0]) !==
       JSON.stringify(currentState.chats.value.chats[0])
     ) {

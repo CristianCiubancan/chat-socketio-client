@@ -10,6 +10,7 @@ import FetchUserNotifications from "../operations/user/fetchNotifications";
 import { setNotifications } from "../redux/features/notifications/notificationsSlice";
 import { SocketContext, socket } from "../utils/SocketContext";
 import NextNprogress from "nextjs-progressbar";
+import { setUserAsGuest } from "../redux/features/user/userSlice";
 
 const GlobalStyle = ({ children }: any) => {
   return (
@@ -75,6 +76,13 @@ MyApp.getInitialProps = wrapper.getInitialPageProps(
           const notificationsResponse = await FetchUserNotifications(
             actualCookie
           );
+
+          if (
+            notificationsResponse.error &&
+            notificationsResponse.error === "not authenticated"
+          ) {
+            store.dispatch(setUserAsGuest());
+          }
           store.dispatch(setNotifications(notificationsResponse));
         }
       }

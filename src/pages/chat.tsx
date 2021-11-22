@@ -1,8 +1,10 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import CardsList from "../components/cardsList";
 import Layout from "../components/Layout";
 import FetchUserChats from "../operations/chat/userChats";
+import { setUserAsGuest } from "../redux/features/user/userSlice";
 import { setChats } from "../redux/features/userChats/userChatsSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { wrapper } from "../redux/store";
@@ -12,6 +14,7 @@ import { RefetchOnIdle } from "../utils/refetchOnIdle";
 const Chat = ({}: any) => {
   const windowSize = getScreenSize();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const {
     user: { value: currentUser },
@@ -20,7 +23,12 @@ const Chat = ({}: any) => {
 
   RefetchOnIdle(async () => {
     const chats = await FetchUserChats();
-    dispatch(setChats(chats));
+    if (chats.error && chats.error === "not authenticated") {
+      dispatch(setUserAsGuest());
+      router.push("/login");
+    } else {
+      dispatch(setChats(chats));
+    }
   });
 
   if (windowSize.width === 0 && windowSize.height === 0) {
@@ -69,7 +77,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       currentState.chats.value.chats[0].id === 0
     ) {
       const response = await FetchUserChats(cookie ? cookie : null);
-      if (!response.error) {
+      if (response.error && response.error === "not authenticated") {
+        store.dispatch(setUserAsGuest());
+      } else {
         await store.dispatch(setChats(response));
       }
     }

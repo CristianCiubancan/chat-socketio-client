@@ -1,9 +1,11 @@
 import { Button, Flex } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import fetchUserChats from "../operations/chat/userChats";
 import FetchMessages from "../operations/message/fetchMessages";
 import fetchUsers from "../operations/user/fetchUsers";
 import { fetchMoreChatMessages } from "../redux/features/chatMessages/chatMessagesSlice";
+import { setUserAsGuest } from "../redux/features/user/userSlice";
 import { fetchMoreChats } from "../redux/features/userChats/userChatsSlice";
 import { fetchMoreUsers } from "../redux/features/users/usersSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -24,6 +26,7 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
 }) => {
   const { id: chatId } = useAppSelector((state) => state.chat.value);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   if (users) {
     return users.hasMore === false ? null : (
       <Flex justifyContent="center" alignItems="center">
@@ -50,7 +53,12 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
               null,
               chats.chats[chats.chats.length - 1].lastMessage.createdAt
             );
-            dispatch(fetchMoreChats(response));
+            if (response.error && response.error === "not authenticated") {
+              dispatch(setUserAsGuest());
+              router.push("/login");
+            } else {
+              dispatch(fetchMoreChats(response));
+            }
           }}
           colorScheme="teal"
           my={4}>

@@ -10,13 +10,15 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { newMessageSentToChat } from "../../redux/features/userChats/userChatsSlice";
 import { SocketContext } from "../../utils/SocketContext";
 import { UserData } from "../cards/userCard";
+import { setUserAsGuest } from "../../redux/features/user/userSlice";
+import { useRouter } from "next/router";
 
 interface MessageInputProps {}
 
 const MessageInput: React.FC<MessageInputProps> = () => {
   const dispatch = useAppDispatch();
   const socket = useContext(SocketContext);
-
+  const router = useRouter();
   const [otherUserId, setOtherUserId] = useState<number>();
 
   const {
@@ -42,6 +44,10 @@ const MessageInput: React.FC<MessageInputProps> = () => {
       onSubmit={async (values, actions) => {
         if (values.message !== "") {
           const data = await SendMessageOperation(chat.id, values.message);
+          if (data.error && data.error === "not authenticated") {
+            dispatch(setUserAsGuest());
+            router.push("/login");
+          }
           actions.resetForm();
           dispatch(sendNewMessage(data));
           dispatch(newMessageSentToChat({ message: data, chat }));

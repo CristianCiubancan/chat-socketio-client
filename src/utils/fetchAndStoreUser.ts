@@ -7,9 +7,9 @@ const fetchAndStoreUser = async (
   cookie: string | null = null
 ) => {
   const user = await fetchMe(cookie);
-  if (user === null) {
+  if (user === null || (user.error && user.error === "not authenticated")) {
     await store.dispatch(setUserAsGuest());
-  } else {
+  } else if (user && !user.error) {
     await store.dispatch(setUser(user));
   }
 };

@@ -18,6 +18,7 @@ import { sendNewMessage } from "../../redux/features/chatMessages/chatMessagesSl
 import { newChatMessageReceived } from "../../redux/features/userChats/userChatsSlice";
 import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 import FetchUserNotifications from "../../operations/user/fetchNotifications";
+import { setUserAsGuest } from "../../redux/features/user/userSlice";
 
 interface NavBarProps {}
 
@@ -37,6 +38,10 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     if (router.query.id) {
     } else {
       const notifications = await FetchUserNotifications();
+      if (notifications.error && notifications.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      }
       dispatch(setNotifications(notifications));
     }
   });
@@ -57,36 +62,42 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         const readMessage = await ReadMessageOperation(
           message.message.message.id
         );
-        const messageWithReaders = {
-          id: readMessage.messageId,
-          createdAt: readMessage.createdAt,
-          updatedAt: readMessage.updatedAt,
-          chatId: message.message.chat.id,
-          text: message.message.message.text,
-          senderId: message.message.message.senderId,
-          readers: [
-            { id: currentUser.id },
-            { id: message.message.message.senderId },
-          ],
-        };
 
-        dispatch(sendNewMessage(messageWithReaders));
+        if (readMessage.error && readMessage.error === "not authenticated") {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        } else {
+          const messageWithReaders = {
+            id: readMessage.messageId,
+            createdAt: readMessage.createdAt,
+            updatedAt: readMessage.updatedAt,
+            chatId: message.message.chat.id,
+            text: message.message.message.text,
+            senderId: message.message.message.senderId,
+            readers: [
+              { id: currentUser.id },
+              { id: message.message.message.senderId },
+            ],
+          };
 
-        dispatch(
-          newChatMessageReceived({
-            ...message.message.chat,
-            lastMessage: {
-              text: message.message.message.text,
-              chatId: message.message.chat.id,
-              senderId: message.message.message.senderId,
-              createdAt: readMessage.createdAt,
-              readers: [
-                { id: currentUser.id },
-                { id: message.message.message.senderId },
-              ],
-            },
-          })
-        );
+          dispatch(sendNewMessage(messageWithReaders));
+
+          dispatch(
+            newChatMessageReceived({
+              ...message.message.chat,
+              lastMessage: {
+                text: message.message.message.text,
+                chatId: message.message.chat.id,
+                senderId: message.message.message.senderId,
+                createdAt: readMessage.createdAt,
+                readers: [
+                  { id: currentUser.id },
+                  { id: message.message.message.senderId },
+                ],
+              },
+            })
+          );
+        }
       } else {
         // outside of the chat that received message
         dispatch(

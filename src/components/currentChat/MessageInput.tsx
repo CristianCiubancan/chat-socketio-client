@@ -9,6 +9,7 @@ import { sendNewMessage } from "../../redux/features/chatMessages/chatMessagesSl
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { newMessageSentToChat } from "../../redux/features/userChats/userChatsSlice";
 import { SocketContext } from "../../utils/SocketContext";
+import { UserData } from "../cards/userCard";
 
 interface MessageInputProps {}
 
@@ -24,7 +25,7 @@ const MessageInput: React.FC<MessageInputProps> = () => {
   } = useAppSelector((state) => state);
 
   useEffect(() => {
-    chat.members.map((member) => {
+    chat.members.map((member: UserData) => {
       if (member.id !== currentUser.id) {
         setOtherUserId(member.id);
       }

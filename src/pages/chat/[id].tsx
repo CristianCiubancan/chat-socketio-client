@@ -131,7 +131,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const chatId = parseInt(context.query.id as string);
     const cookie = context.req.headers.cookie;
 
-    const currentChat = currentState.chats.value.chats.filter(
+    const currentChat = currentState.chats?.value?.chats?.filter(
       (chat) => chat.id === chatId
     )[0];
 
@@ -144,7 +144,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       await store.dispatch(setChatMessages(messagesResponse));
     }
 
-    if (currentState.chats.value.chats[0].id === 0) {
+    if (
+      currentState.chats.value.chats &&
+      currentState.chats.value.chats[0].id === 0
+    ) {
       const response = await FetchUserChats(cookie ? cookie : null);
       if (!response.error) {
         await store.dispatch(setChats(response));

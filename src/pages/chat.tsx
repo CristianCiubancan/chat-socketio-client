@@ -63,7 +63,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const currentState = store.getState();
     const cookie = context.req.headers.cookie;
 
-    if (currentState.chats.value.chats[0].id === 0) {
+    if (
+      currentState.chats.value.chats &&
+      currentState.chats.value.chats[0].id === 0
+    ) {
       const response = await FetchUserChats(cookie ? cookie : null);
       if (!response.error) {
         await store.dispatch(setChats(response));

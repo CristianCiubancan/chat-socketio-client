@@ -31,7 +31,9 @@ const userChatSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.chat.value;
+      if (action.payload.chat) {
+        state.value = action.payload.chat.value;
+      }
     });
   },
 });

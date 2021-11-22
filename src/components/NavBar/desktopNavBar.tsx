@@ -6,6 +6,8 @@ import router from "next/router";
 import React from "react";
 import LogoutOperation from "../../operations/user/logout";
 import { CurrentUser } from "../../redux/features/user/userSlice";
+import { useAppDispatch } from "../../redux/hooks";
+import { ResetStore } from "../../utils/resetStore";
 
 interface DesktopNavBarProps {
   me: CurrentUser;
@@ -13,9 +15,11 @@ interface DesktopNavBarProps {
 }
 
 export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ me, width }) => {
+  const dispatch = useAppDispatch();
+
   return (
     <Box>
-      {!me || me.id === 0 ? (
+      {!me.id || me.id === 0 ? (
         <Box>
           <NextLink href="/login">
             <Link color="white" mr={2}>
@@ -50,6 +54,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ me, width }) => {
               onClick={async () => {
                 localStorage.removeItem("CurrentUser");
                 await LogoutOperation();
+                ResetStore(dispatch);
                 router.reload();
               }}
               variant="link"

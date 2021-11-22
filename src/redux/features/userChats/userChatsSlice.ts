@@ -7,7 +7,29 @@ export interface UserChatsState {
 }
 
 const initialState: UserChatsState = {
-  value: { chats: [], hasMore: false },
+  value: {
+    chats: [
+      {
+        id: 0,
+        lastMessage: {
+          chatId: 0,
+          createdAt: "0000",
+          readers: [{ id: 0 }],
+          senderId: 0,
+          text: "none",
+        },
+        members: [
+          {
+            createdAt: "0000",
+            id: 0,
+            username: "Guest",
+            profilePicUrl: "none",
+          },
+        ],
+      },
+    ],
+    hasMore: false,
+  },
 };
 
 const userChatsSlice = createSlice({
@@ -69,16 +91,22 @@ const userChatsSlice = createSlice({
 
       state.value.chats = [action.payload, ...otherChats];
     },
+    resetChats(state) {
+      state.value = initialState.value;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.chats.value;
+      if (action.payload.chats) {
+        state.value = action.payload.chats.value;
+      }
     });
   },
 });
 
 export const {
+  resetChats,
   newChatMessageReceived,
   readChat,
   newMessageSentToChat,

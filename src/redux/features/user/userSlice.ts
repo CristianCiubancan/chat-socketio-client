@@ -33,14 +33,20 @@ const userSlice = createSlice({
     setUserProfilePic(state, action) {
       state.value.profilePicUrl = action.payload;
     },
+    resetUser(state) {
+      state.value = initialState.value;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.user.value;
+      if (action.payload.user) {
+        state.value = action.payload.user.value;
+      }
     });
   },
 });
 
-export const { setUserProfilePic, setUser, setUserAsGuest } = userSlice.actions;
+export const { resetUser, setUserProfilePic, setUser, setUserAsGuest } =
+  userSlice.actions;
 export default userSlice.reducer;

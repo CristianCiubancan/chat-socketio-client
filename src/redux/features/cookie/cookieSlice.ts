@@ -6,7 +6,7 @@ interface CookieState {
 }
 
 const initialState: CookieState = {
-  value: null,
+  value: "none",
 };
 
 const cookieSlice = createSlice({
@@ -16,14 +16,19 @@ const cookieSlice = createSlice({
     getCookie(state, action) {
       state.value = action.payload;
     },
+    resetCookie(state) {
+      state.value = initialState.value;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.cookie.value;
+      if (action.payload.cookie) {
+        state.value = action.payload.cookie.value;
+      }
     });
   },
 });
 
-export const { getCookie } = cookieSlice.actions;
+export const { resetCookie, getCookie } = cookieSlice.actions;
 export default cookieSlice.reducer;

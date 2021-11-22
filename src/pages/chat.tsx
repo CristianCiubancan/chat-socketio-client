@@ -27,7 +27,7 @@ const Chat = ({}: any) => {
     return <Layout></Layout>;
   }
 
-  if (currentUser.id === 0) {
+  if (!currentUser.id || currentUser.id === 0) {
     return (
       <Layout>
         <Box textAlign="center">
@@ -60,10 +60,14 @@ const Chat = ({}: any) => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
+    const currentState = store.getState();
     const cookie = context.req.headers.cookie;
-    const response = await FetchUserChats(cookie ? cookie : null);
-    if (!response.error) {
-      await store.dispatch(setChats(response));
+
+    if (currentState.chats.value.chats[0].id === 0) {
+      const response = await FetchUserChats(cookie ? cookie : null);
+      if (!response.error) {
+        await store.dispatch(setChats(response));
+      }
     }
 
     return { props: {} };

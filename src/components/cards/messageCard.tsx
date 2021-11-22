@@ -9,7 +9,7 @@ export interface MessageData {
   createdAt: string;
   id: number;
   readers: UserData[];
-  senderId: 1;
+  senderId: number;
   text: string;
   updatedAt: string;
 }

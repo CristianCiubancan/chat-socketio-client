@@ -7,7 +7,12 @@ interface UsersState {
 }
 
 const initialState: UsersState = {
-  value: { users: [], hasMore: false },
+  value: {
+    users: [
+      { createdAt: "0000", id: 0, profilePicUrl: "none", username: "Guest" },
+    ],
+    hasMore: false,
+  },
 };
 
 const usersSlice = createSlice({
@@ -21,14 +26,19 @@ const usersSlice = createSlice({
       state.value.hasMore = action.payload.hasMore;
       state.value.users = [...state.value.users, ...action.payload.users];
     },
+    resetUsers(state) {
+      state.value = initialState.value;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.users.value;
+      if (action.payload.users) {
+        state.value = action.payload.users.value;
+      }
     });
   },
 });
 
-export const { setUsers, fetchMoreUsers } = usersSlice.actions;
+export const { resetUsers, setUsers, fetchMoreUsers } = usersSlice.actions;
 export default usersSlice.reducer;

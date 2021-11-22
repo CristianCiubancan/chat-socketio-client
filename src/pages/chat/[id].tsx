@@ -127,22 +127,28 @@ const Chat = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
+    const currentState = store.getState();
     const chatId = parseInt(context.query.id as string);
     const cookie = context.req.headers.cookie;
 
-    const chatResponse = await FetchUserChat(cookie, chatId);
-    if (!chatResponse.error) {
-      await store.dispatch(setChat(chatResponse));
-    }
+    const currentChat = currentState.chats.value.chats.filter(
+      (chat) => chat.id === chatId
+    )[0];
+
+    const data = currentChat ? currentChat : await FetchUserChat(null, chatId);
+
+    await store.dispatch(setChat(data));
 
     const messagesResponse = await FetchMessages(cookie, chatId);
     if (!messagesResponse.error) {
       await store.dispatch(setChatMessages(messagesResponse));
     }
 
-    const response = await FetchUserChats(cookie ? cookie : null);
-    if (!response.error) {
-      await store.dispatch(setChats(response));
+    if (currentState.chats.value.chats[0].id === 0) {
+      const response = await FetchUserChats(cookie ? cookie : null);
+      if (!response.error) {
+        await store.dispatch(setChats(response));
+      }
     }
     return { props: {} };
   }

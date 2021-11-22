@@ -6,10 +6,14 @@ import { toErrorMap } from "../utils/toErrorMap";
 import Layout from "../components/Layout";
 import RegisterOperation from "../operations/user/register";
 import { setUser } from "../redux/features/user/userSlice";
+import { useAppDispatch } from "../redux/hooks";
+import { ResetStore } from "../utils/resetStore";
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
+  const dispatch = useAppDispatch();
+
   return (
     <Layout variant="small">
       <Formik
@@ -19,7 +23,8 @@ const Register: React.FC<registerProps> = ({}) => {
           if (data.errors) {
             setErrors(toErrorMap(data.errors));
           } else if (data.user) {
-            setUser(data.user);
+            ResetStore(dispatch);
+            dispatch(setUser(data.user));
             window.location.href = "/";
           }
         }}>

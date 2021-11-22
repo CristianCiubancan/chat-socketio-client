@@ -64,15 +64,19 @@ function MyApp({ Component, pageProps }: AppProps) {
 MyApp.getInitialProps = wrapper.getInitialPageProps(
   (store) => async (context: any) => {
     const user = store.getState().user;
-
+    const notifications = store.getState().notifications;
     if (context.ctx.req) {
-      const cookie = context.ctx.req.headers.cookie;
-      const actualCookie = cookie === undefined ? null : cookie;
+      const cookie = context.ctx.req.cookies.qid;
+      const actualCookie = cookie === undefined ? null : `qid=${cookie}`;
       store.dispatch(getCookie(actualCookie));
 
       if (cookie) {
-        const notifications = await FetchUserNotifications(cookie);
-        store.dispatch(setNotifications(notifications));
+        if (notifications.value[0]?.chatId === 0) {
+          const notificationsResponse = await FetchUserNotifications(
+            actualCookie
+          );
+          store.dispatch(setNotifications(notificationsResponse));
+        }
       }
 
       if (user.value.id === null) {

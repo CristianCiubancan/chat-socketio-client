@@ -1,5 +1,8 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import React from "react";
+import FetchUserChats from "../operations/chat/userChats";
+import { setChats } from "../redux/features/userChats/userChatsSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { WindowSizeState } from "../utils/getScreenSize";
 import ChatCard, { ChatData } from "./cards/chatCard";
 import MessageCard, { MessageData } from "./cards/messageCard";
@@ -21,18 +24,38 @@ const CardsList: React.FC<CardsListProps> = ({
   windowSize,
   chatMessages,
 }) => {
+  const dispatch = useAppDispatch();
+  const currentState = useAppSelector((state) => state);
+  const handleChatsUpdate = async () => {
+    const response = await FetchUserChats();
+
+    if (
+      JSON.stringify(response.chats[0]) !==
+      JSON.stringify(currentState.chats.value.chats[0])
+    ) {
+      dispatch(setChats(response));
+    }
+  };
+
   if (users) {
     return (
       <Stack spacing={8}>
-        {users?.map((user: UserData) => (
-          <UserCard key={user.id} user={user} />
-        ))}
+        {users?.map((user: UserData) => {
+          if (user.id === 0) {
+            return null;
+          } else {
+            return <UserCard key={user.id} user={user} />;
+          }
+        })}
       </Stack>
     );
   } else if (chats) {
     if (!windowSize) {
       return null;
     }
+
+    handleChatsUpdate();
+
     return (
       <Box
         py={2}

@@ -8,12 +8,12 @@ export interface Notification {
   senderId: number;
 }
 
-interface CookieState {
+interface NotificationsState {
   value: Notification[];
 }
 
-const initialState: CookieState = {
-  value: [],
+const initialState: NotificationsState = {
+  value: [{ chatId: 0, senderId: 0, messageId: 0, userId: 0 }],
 };
 
 const cookieSlice = createSlice({
@@ -44,15 +44,24 @@ const cookieSlice = createSlice({
         },
       ];
     },
+    resetNotifications(state) {
+      state.value = initialState.value;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(HYDRATE, (state, action: any) => {
-      state.value = action.payload.notifications.value;
+      if (action.payload.notifications) {
+        state.value = action.payload.notifications.value;
+      }
     });
   },
 });
 
-export const { newNotification, removeNotifications, setNotifications } =
-  cookieSlice.actions;
+export const {
+  resetNotifications,
+  newNotification,
+  removeNotifications,
+  setNotifications,
+} = cookieSlice.actions;
 export default cookieSlice.reducer;

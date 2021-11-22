@@ -16,6 +16,8 @@ import React, { LegacyRef, useRef } from "react";
 import NextLink from "next/link";
 import LogoutOperation from "../../operations/user/logout";
 import { CurrentUser } from "../../redux/features/user/userSlice";
+import { useAppDispatch } from "../../redux/hooks";
+import { ResetStore } from "../../utils/resetStore";
 
 interface MobileNavBarProps {
   me: CurrentUser;
@@ -25,11 +27,13 @@ interface MobileNavBarProps {
 export const MobileNavBar: React.FC<MobileNavBarProps> = ({ me, width }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const dispatch = useAppDispatch();
+
   const btnRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   return (
     <Box>
-      {!me || me.id === 0 ? (
+      {!me.id || me.id === 0 ? (
         <Box>
           <Button
             ref={btnRef as LegacyRef<HTMLButtonElement>}
@@ -102,6 +106,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({ me, width }) => {
                         onClick={async () => {
                           localStorage.removeItem("CurrentUser");
                           await LogoutOperation();
+                          ResetStore(dispatch);
                           router.reload();
                         }}
                         variant="link"

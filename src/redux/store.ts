@@ -7,9 +7,13 @@ import userChatsReducer from "./features/userChats/userChatsSlice";
 import userChatReducer from "./features/userChat/userChatSlice";
 import notificationsReducer from "./features/notifications/notificationsSlice";
 import chatMessagesReducer from "./features/chatMessages/chatMessagesSlice";
+import {
+  nextReduxCookieMiddleware,
+  wrapMakeStore,
+} from "next-redux-cookie-wrapper";
 
-export function makeStore() {
-  return configureStore({
+export const makeStore = wrapMakeStore(() =>
+  configureStore({
     reducer: {
       cookie: cookieReducer,
       users: usersReducer,
@@ -19,16 +23,29 @@ export function makeStore() {
       chatMessages: chatMessagesReducer,
       notifications: notificationsReducer,
     },
-  });
-}
-
-const store = makeStore();
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(
+        nextReduxCookieMiddleware({
+          maxAge: 60 * 60 * 24 * 10,
+          subtrees: [
+            `cookie`,
+            `users`,
+            `user`,
+            `chats`,
+            `chat`,
+            `chatMessages`,
+            `notifications`,
+          ],
+        })
+      ),
+  })
+);
 
 export type AppStore = ReturnType<typeof makeStore>;
 
-export type AppState = ReturnType<typeof store.getState>;
+export type AppState = ReturnType<AppStore["getState"]>;
 
-export type AppDispatch = typeof store.dispatch;
+export type AppDispatch = AppStore["dispatch"];
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,

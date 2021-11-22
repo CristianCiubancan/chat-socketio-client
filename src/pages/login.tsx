@@ -7,8 +7,12 @@ import NextLink from "next/link";
 import Layout from "../components/Layout";
 import LoginOperation from "../operations/user/login";
 import { setUser } from "../redux/features/user/userSlice";
+import { ResetStore } from "../utils/resetStore";
+import { useAppDispatch } from "../redux/hooks";
 
 const Login: React.FC<{}> = ({}) => {
+  const dispatch = useAppDispatch();
+
   return (
     <Layout variant="small">
       <Formik
@@ -19,7 +23,8 @@ const Login: React.FC<{}> = ({}) => {
           if (data.errors) {
             setErrors(toErrorMap(data.errors));
           } else if (data.user) {
-            setUser(data.user);
+            ResetStore(dispatch);
+            dispatch(setUser(data.user));
             window.location.href = "/";
           }
         }}>

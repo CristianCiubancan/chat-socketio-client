@@ -40,6 +40,10 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     }
   });
 
+  const actualNotifications = notifications
+    ? notifications.filter((notification) => notification.chatId !== 0)
+    : [];
+
   useEffect(() => {
     socketClient?.on("new-message", async (message) => {
       if (
@@ -130,14 +134,14 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           {width > 600 ? (
             <Flex alignItems="center">
               {currentUser.id === 0 || !currentUser.id ? null : (
-                <Notifications notificationsData={notifications} />
+                <Notifications notificationsData={actualNotifications} />
               )}
               <DesktopNavBar me={currentUser} width={width} />
             </Flex>
           ) : (
             <Flex alignItems="center">
               {currentUser.id === 0 || !currentUser.id ? null : (
-                <Notifications notificationsData={notifications} />
+                <Notifications notificationsData={actualNotifications} />
               )}
               <MobileNavBar me={currentUser} width={width} />
             </Flex>

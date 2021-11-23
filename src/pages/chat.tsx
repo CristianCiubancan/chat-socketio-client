@@ -28,8 +28,8 @@ const Chat = ({}: any) => {
       router.push("/login");
     } else {
       if (
-        chats.chats[0].lastMessage.createdAt !==
-        chatsResponse.chats[0].lastMessage.createdAt
+        chats.chats[0].lastMessage.cursor !==
+        chatsResponse.chats[0].lastMessage.cursor
       ) {
         dispatch(setChats(chatsResponse));
       }

@@ -13,7 +13,7 @@ const MyProfile = () => {
   const user = useAppSelector((state) => state.user.value);
   const dispatch = useAppDispatch();
   const onDrop = useCallback(async ([file]) => {
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append("name", file.name);
     formData.append("file", file);
     const newProfilePicUrl = await ChangeProfilePicOperation(formData);

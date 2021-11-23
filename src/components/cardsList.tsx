@@ -1,6 +1,6 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import FetchUserChats from "../operations/chat/userChats";
 import { setUserAsGuest } from "../redux/features/user/userSlice";
 import { setChats } from "../redux/features/userChats/userChatsSlice";
@@ -59,8 +59,9 @@ const CardsList: React.FC<CardsListProps> = ({
     if (!windowSize) {
       return null;
     }
-
-    handleChatsUpdate();
+    useEffect(() => {
+      handleChatsUpdate();
+    }, []);
 
     return (
       <Box

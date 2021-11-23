@@ -36,11 +36,18 @@ const CardsList: React.FC<CardsListProps> = ({
       dispatch(setUserAsGuest());
       router.push("/login");
     } else if (
-      JSON.stringify(response.chats[0]) !==
-      JSON.stringify(currentState.chats.value.chats[0])
+      response.chats[0].id !== currentState.chats.value.chats[0].id &&
+      response.chats[0].lastMessage.text !==
+        currentState.chats.value.chats[0].lastMessage.text
     ) {
       dispatch(setChats(response));
     }
+    // else if (
+    //   JSON.stringify(response.chats[0]) !==
+    //   JSON.stringify(currentState.chats.value.chats[0])
+    // ) {
+    //   dispatch(setChats(response));
+    // }
   };
 
   if (users) {
@@ -59,10 +66,11 @@ const CardsList: React.FC<CardsListProps> = ({
     if (!windowSize) {
       return null;
     }
+
     useEffect(() => {
       handleChatsUpdate();
     }, []);
-    console.log(chats.chats);
+
     return (
       <Box
         py={2}

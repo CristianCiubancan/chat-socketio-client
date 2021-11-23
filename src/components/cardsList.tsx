@@ -66,6 +66,8 @@ const CardsList: React.FC<CardsListProps> = ({
       return null;
     }
 
+    console.log(chats);
+
     useEffect(() => {
       handleChatsUpdate();
     }, []);

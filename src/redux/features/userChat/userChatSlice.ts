@@ -11,6 +11,7 @@ const initialState: UserChatState = {
     id: 0,
     lastMessage: {
       senderId: 0,
+      cursor: "0000",
       text: "",
       chatId: 0,
       createdAt: "00-00-0000",

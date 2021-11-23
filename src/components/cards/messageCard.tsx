@@ -11,6 +11,7 @@ export interface MessageData {
   readers: UserData[];
   senderId: number;
   text: string;
+  cursor: string;
   updatedAt: string;
 }
 

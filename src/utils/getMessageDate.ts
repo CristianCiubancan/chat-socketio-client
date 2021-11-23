@@ -1,4 +1,5 @@
-const getMessageDate = (messageDate: any) => {
+const getMessageDate = (messageDate: string) => {
+  console.log(messageDate.replace(" ", "T"));
   const date = new Date(messageDate);
   const day = parseInt(date.toISOString().split("-")[2]);
   const month = date.toLocaleString("default", { month: "short" });

@@ -11,6 +11,7 @@ const fetchMe = async (cookie: string | null = null) => {
   );
 
   const data = await response.json();
+
   return data;
 };
 

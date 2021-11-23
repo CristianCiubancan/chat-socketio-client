@@ -51,7 +51,7 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
           onClick={async () => {
             const response = await fetchUserChats(
               null,
-              chats.chats[chats.chats.length - 1].lastMessage.createdAt
+              chats.chats[chats.chats.length - 1].lastMessage.cursor
             );
             if (response.error && response.error === "not authenticated") {
               dispatch(setUserAsGuest());

@@ -15,6 +15,7 @@ export interface ChatData {
     senderId: number;
     text: string;
     chatId: number;
+    cursor: string;
     createdAt: string;
     readers: { id: number }[];
   };

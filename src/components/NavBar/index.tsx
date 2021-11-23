@@ -95,7 +95,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
                 text: message.message.message.text,
                 chatId: message.message.chat.id,
                 senderId: message.message.message.senderId,
-                createdAt: readMessage.createdAt,
+                createdAt: message.message.message.createdAt,
                 readers: [
                   { id: currentUser.id },
                   { id: message.message.message.senderId },

@@ -67,7 +67,7 @@ const Chat = () => {
         } else {
           if (
             chats.chats[0].lastMessage.createdAt !==
-            chatsResponse[0].lastMessage.createdAt
+            chatsResponse.chats[0].lastMessage.createdAt
           ) {
             dispatch(setChats(chatsResponse));
           }

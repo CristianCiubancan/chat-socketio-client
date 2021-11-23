@@ -10,11 +10,7 @@ const ReadMessageOperation = async (messageId: number) => {
   );
 
   const data = await response.json();
-
-  if (data.error) {
-    throw new Error(data.error);
-  }
-
+  console.log(data);
   return data;
 };
 

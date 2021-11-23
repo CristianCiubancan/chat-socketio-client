@@ -62,7 +62,7 @@ const CardsList: React.FC<CardsListProps> = ({
     useEffect(() => {
       handleChatsUpdate();
     }, []);
-
+    console.log(chats.chats);
     return (
       <Box
         py={2}

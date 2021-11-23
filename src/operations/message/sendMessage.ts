@@ -10,7 +10,7 @@ const SendMessageOperation = async (chatId: number, text: string) => {
   );
 
   const data = await response.json();
-
+  console.log(data);
   return data;
 };
 

@@ -37,9 +37,7 @@ const CardsList: React.FC<CardsListProps> = ({
       router.push("/login");
     } else if (
       currentState.chats.value.chats[0].lastMessage.createdAt !==
-        response.chats[0].lastMessage.createdAt &&
-      response.chats[0].lastMessage.text !==
-        currentState.chats.value.chats[0].lastMessage.text
+      response.chats[0].lastMessage.createdAt
     ) {
       dispatch(setChats(response));
     }

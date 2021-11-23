@@ -28,11 +28,11 @@ const Chat = ({}: any) => {
       router.push("/login");
     } else {
       if (
-        chats.chats[0].lastMessage.text !== chatsResponse[0].lastMessage.text &&
         chats.chats[0].lastMessage.createdAt !==
-          chatsResponse[0].lastMessage.createdAt
-      )
+        chatsResponse[0].lastMessage.createdAt
+      ) {
         dispatch(setChats(chatsResponse));
+      }
     }
   });
 

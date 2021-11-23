@@ -22,12 +22,17 @@ const Chat = ({}: any) => {
   } = useAppSelector((state) => state);
 
   RefetchOnIdle(async () => {
-    const chats = await FetchUserChats();
-    if (chats.error && chats.error === "not authenticated") {
+    const chatsResponse = await FetchUserChats();
+    if (chatsResponse.error && chatsResponse.error === "not authenticated") {
       dispatch(setUserAsGuest());
       router.push("/login");
     } else {
-      dispatch(setChats(chats));
+      if (
+        chats.chats[0].lastMessage.text !== chatsResponse[0].lastMessage.text &&
+        chats.chats[0].lastMessage.createdAt !==
+          chatsResponse[0].lastMessage.createdAt
+      )
+        dispatch(setChats(chatsResponse));
     }
   });
 

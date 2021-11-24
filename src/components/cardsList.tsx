@@ -36,8 +36,10 @@ const CardsList: React.FC<CardsListProps> = ({
       dispatch(setUserAsGuest());
       router.push("/login");
     } else if (
+      currentState.chats.value.chats[0] &&
+      response.chats[0] &&
       currentState.chats.value.chats[0].lastMessage.cursor !==
-      response.chats[0].lastMessage.cursor
+        response.chats[0].lastMessage.cursor
     ) {
       dispatch(setChats(response));
     }
@@ -65,8 +67,6 @@ const CardsList: React.FC<CardsListProps> = ({
     if (!windowSize) {
       return null;
     }
-
-    console.log(chats);
 
     useEffect(() => {
       handleChatsUpdate();

@@ -36,45 +36,45 @@ const Chat = () => {
     chatMessages: { value: chatMessages },
   } = useAppSelector((state) => state);
 
-  RefetchOnIdle(async () => {
+  const handleRefetchOnIdle = async () => {
     if (!currentUser || currentUser.id === 0) {
     } else {
       const messages = await FetchMessages(null, chatData.id);
       dispatch(setChatMessages(messages));
 
-      const response = await ReadMessageOperation(messages.messages[0].id);
-      if (response.error && response.error === "not authenticated") {
+      if (messages.messages[0]) {
+        const response = await ReadMessageOperation(messages.messages[0].id);
+        if (response.error && response.error === "not authenticated") {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        }
+      }
+
+      const notifications = await FetchUserNotifications();
+      if (notifications.error && notifications.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      }
+      dispatch(setNotifications(notifications));
+
+      const chatsResponse = await FetchUserChats();
+      if (chatsResponse.error && chatsResponse.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
       } else {
-        const notifications = await FetchUserNotifications();
         if (
-          notifications.error &&
-          notifications.error === "not authenticated"
-        ) {
-          dispatch(setUserAsGuest());
-          router.push("/login");
-        }
-        dispatch(setNotifications(notifications));
-
-        const chatsResponse = await FetchUserChats();
-        if (
-          chatsResponse.error &&
-          chatsResponse.error === "not authenticated"
-        ) {
-          dispatch(setUserAsGuest());
-          router.push("/login");
-        } else {
-          if (
-            chats.chats[0].lastMessage.cursor !==
+          chats.chats[0] &&
+          chatsResponse.chats[0] &&
+          chats.chats[0].lastMessage.cursor !==
             chatsResponse.chats[0].lastMessage.cursor
-          ) {
-            dispatch(setChats(chatsResponse));
-          }
+        ) {
+          dispatch(setChats(chatsResponse));
         }
       }
     }
-  });
+  };
+
+  RefetchOnIdle(handleRefetchOnIdle, chats);
 
   const handleReadMessage = async (messageId: number) => {
     const response = await ReadMessageOperation(messageId);

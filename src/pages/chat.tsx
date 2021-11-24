@@ -34,7 +34,7 @@ const Chat = ({}: any) => {
         dispatch(setChats(chatsResponse));
       }
     }
-  });
+  }, chats);
 
   if (windowSize.width === 0 && windowSize.height === 0) {
     return <Layout></Layout>;

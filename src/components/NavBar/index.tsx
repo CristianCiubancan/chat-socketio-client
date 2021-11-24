@@ -49,7 +49,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         dispatch(setNotifications(notifications));
       }
     }
-  });
+  }, notifications);
 
   const actualNotifications =
     notifications && currentUser.id && currentUser.id !== 0
@@ -96,6 +96,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
                 chatId: message.message.chat.id,
                 senderId: message.message.message.senderId,
                 createdAt: message.message.message.createdAt,
+                cursor: message.message.message.cursor,
                 readers: [
                   { id: currentUser.id },
                   { id: message.message.message.senderId },
@@ -117,6 +118,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
               chatId: message.message.chat.id,
               senderId: message.message.message.senderId,
               createdAt: message.message.message.createdAt,
+              cursor: message.message.message.cursor,
               readers: [{ id: message.message.message.senderId }],
             },
           })

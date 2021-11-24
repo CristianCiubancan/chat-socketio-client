@@ -170,7 +170,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       (chat) => chat.id === chatId
     )[0];
 
-    const data = currentChat ? currentChat : await FetchUserChat(null, chatId);
+    const data =
+      currentChat && isNaN(chatId)
+        ? currentChat
+        : await FetchUserChat(null, chatId);
 
     await store.dispatch(setChat(data));
 

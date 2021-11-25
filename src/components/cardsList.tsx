@@ -83,14 +83,20 @@ const CardsList: React.FC<CardsListProps> = ({
             : "120"
         }>
         <Stack h="100%" spacing={2} w="100%" px={2} overflowY="scroll">
-          {chats.chats?.map((chat: ChatData) => (
-            <ChatCard
-              key={chat.id}
-              chat={chat}
-              singleItemOnPage={singleItemOnPage}
-              windowSize={windowSize}
-            />
-          ))}
+          {chats.chats?.map((chat: ChatData) => {
+            if (chat.id === 0) {
+              return null;
+            } else {
+              return (
+                <ChatCard
+                  key={chat.id}
+                  chat={chat}
+                  singleItemOnPage={singleItemOnPage}
+                  windowSize={windowSize}
+                />
+              );
+            }
+          })}
 
           <FetchMoreButton chats={chats} />
         </Stack>
@@ -108,9 +114,13 @@ const CardsList: React.FC<CardsListProps> = ({
         overflowY="scroll"
         height="100%"
         width="100%">
-        {chatMessages.messages.map((message) => (
-          <MessageCard key={message.id} message={message} />
-        ))}
+        {chatMessages.messages.map((message) => {
+          if (message.id === 0) {
+            return null;
+          } else {
+            return <MessageCard key={message.id} message={message} />;
+          }
+        })}
         <FetchMoreButton chatMessages={chatMessages} />
       </Flex>
     );

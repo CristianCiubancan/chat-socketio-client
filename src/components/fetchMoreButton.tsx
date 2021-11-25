@@ -27,14 +27,21 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
   const { id: chatId } = useAppSelector((state) => state.chat.value);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  if (users) {
+
+  const actualUsers = users?.users.filter((user) => user.id !== 0);
+  const actualChats = chats?.chats.filter((chat) => chat.id !== 0);
+  const actualMessages = chatMessages?.messages.filter(
+    (message) => message.id !== 0
+  );
+
+  if (actualUsers && users) {
     return users.hasMore === false ? null : (
       <Flex justifyContent="center" alignItems="center">
         <Button
           onClick={async () => {
             const response = await fetchUsers(
               null,
-              users.users[users.users.length - 1].createdAt
+              actualUsers[actualUsers.length - 1].createdAt
             );
             dispatch(fetchMoreUsers(response));
           }}
@@ -44,14 +51,14 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
         </Button>
       </Flex>
     );
-  } else if (chats) {
+  } else if (chats && actualChats) {
     return chats.hasMore === false ? null : (
       <Flex justifyContent="center" alignItems="center">
         <Button
           onClick={async () => {
             const response = await fetchUserChats(
               null,
-              chats.chats[chats.chats.length - 1].lastMessage.cursor
+              actualChats[actualChats.length - 1].lastMessage.cursor
             );
             if (response.error && response.error === "not authenticated") {
               dispatch(setUserAsGuest());
@@ -66,7 +73,7 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
         </Button>
       </Flex>
     );
-  } else if (chatMessages) {
+  } else if (chatMessages && actualMessages) {
     return chatMessages.hasMore === false ? null : (
       <Flex justifyContent="center" alignItems="center">
         <Button
@@ -74,7 +81,7 @@ const FetchMoreButton: React.FC<fetchMoreButtonProps> = ({
             const response = await FetchMessages(
               null,
               chatId,
-              chatMessages.messages[chatMessages.messages.length - 1].createdAt
+              actualMessages[actualMessages.length - 1].createdAt
             );
             dispatch(fetchMoreChatMessages(response));
           }}

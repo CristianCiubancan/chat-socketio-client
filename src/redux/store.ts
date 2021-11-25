@@ -26,7 +26,8 @@ export const makeStore = wrapMakeStore(() =>
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(
         nextReduxCookieMiddleware({
-          maxAge: 60 * 60 * 24 * 10,
+          maxAge: 1000 * 30,
+          // maxAge:  60 * 60 * 24 * 10,
           subtrees: [
             `cookie`,
             `users`,

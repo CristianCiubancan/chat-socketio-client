@@ -44,8 +44,6 @@ const Chat = () => {
     } else {
       const messages = await FetchMessages(null, chatData.id);
 
-      alert(JSON.stringify(messages));
-
       dispatch(setChatMessages(messages));
 
       if (chatMessages.messages[0] && chatMessages.messages[0].id !== 0) {

@@ -40,13 +40,15 @@ const Chat = () => {
   } = useAppSelector((state) => state);
 
   const handleRefetchOnIdle = async () => {
-    if (!currentUser || currentUser.id === 0) {
-    } else {
+    if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
       dispatch(setChatMessages(messages));
 
-      if (chatMessages.messages[0] && chatMessages.messages[0].id !== 0) {
+      if (
+        chatMessages.messages.length > 0 &&
+        chatMessages.messages[0].id !== 0
+      ) {
         const response = await ReadMessageOperation(messages.messages[0].id);
         if (response.error && response.error === "not authenticated") {
           dispatch(setUserAsGuest());

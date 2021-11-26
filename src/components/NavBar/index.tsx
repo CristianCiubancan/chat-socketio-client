@@ -65,13 +65,18 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
   useEffect(() => {
     socketClient?.on("new-message-sent-by-me", async (message) => {
-      dispatch(sendNewMessage(message.message.message));
-      dispatch(
-        newMessageSentToChat({
-          message: message.message.message,
-          chat: message.message.chat,
-        })
-      );
+      if (
+        router.query.id &&
+        parseInt(router.query.id as string) === message.message.chat.id
+      ) {
+        dispatch(sendNewMessage(message.message.message));
+        dispatch(
+          newMessageSentToChat({
+            message: message.message.message,
+            chat: message.message.chat,
+          })
+        );
+      }
     });
 
     socketClient?.on("new-read-message", async (message) => {

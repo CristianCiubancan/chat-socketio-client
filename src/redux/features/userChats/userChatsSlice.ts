@@ -45,52 +45,58 @@ const userChatsSlice = createSlice({
       state.value.chats = [...state.value.chats, ...action.payload.chats];
     },
     readChat(state, action) {
-      const newChatsList = current(state.value).chats.map((chat) => {
-        if (chat.id !== action.payload.chatId) {
-          return chat;
-        } else {
-          const chatThatWasRead: ChatData = {
-            ...chat,
-            lastMessage: {
-              ...chat.lastMessage,
-              readers: [
-                ...chat.lastMessage.readers,
-                { id: action.payload.userId },
-              ],
-            },
-          };
+      if (state.value.chats[0].id !== 0) {
+        const newChatsList = current(state.value).chats.map((chat) => {
+          if (chat.id !== action.payload.chatId) {
+            return chat;
+          } else {
+            const chatThatWasRead: ChatData = {
+              ...chat,
+              lastMessage: {
+                ...chat.lastMessage,
+                readers: [
+                  ...chat.lastMessage.readers,
+                  { id: action.payload.userId },
+                ],
+              },
+            };
 
-          return chatThatWasRead;
-        }
-      });
-      state.value = { chats: newChatsList, hasMore: state.value.hasMore };
+            return chatThatWasRead;
+          }
+        });
+        state.value = { chats: newChatsList, hasMore: state.value.hasMore };
+      }
     },
     newMessageSentToChat(state, action) {
-      const newMessage = action.payload.message;
-      const otherChats = current(state.value).chats.filter(
-        (obj) => obj.id !== newMessage.chatId
-      );
-      state.value = {
-        chats: [
-          {
-            members: action.payload.chat.members,
-            id: action.payload.chat.id,
-            lastMessage: {
-              ...newMessage,
-              readers: [{ id: newMessage.senderId }],
+      if (state.value.chats[0].id !== 0) {
+        const newMessage = action.payload.message;
+        const otherChats = current(state.value).chats.filter(
+          (obj) => obj.id !== newMessage.chatId
+        );
+        state.value = {
+          chats: [
+            {
+              members: action.payload.chat.members,
+              id: action.payload.chat.id,
+              lastMessage: {
+                ...newMessage,
+                readers: [{ id: newMessage.senderId }],
+              },
             },
-          },
-          ...otherChats,
-        ],
-        hasMore: state.value.hasMore,
-      };
+            ...otherChats,
+          ],
+          hasMore: state.value.hasMore,
+        };
+      }
     },
     newChatMessageReceived(state, action) {
-      const otherChats = current(state.value).chats.filter(
-        (obj) => obj.id !== action.payload.id
-      );
+      if (state.value.chats[0].id !== 0) {
+        const otherChats = current(state.value).chats.filter(
+          (obj) => obj.id !== action.payload.id
+        );
 
-      state.value.chats = [action.payload, ...otherChats];
+        state.value.chats = [action.payload, ...otherChats];
+      }
     },
     resetChats(state) {
       state.value = initialState.value;

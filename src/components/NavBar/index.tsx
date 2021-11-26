@@ -65,7 +65,6 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
   useEffect(() => {
     socketClient?.on("new-message-sent-by-me", async (message) => {
-      console.log(message);
       if (
         router.query.id &&
         parseInt(router.query.id as string) === message.message.chat.id

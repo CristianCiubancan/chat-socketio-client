@@ -60,7 +60,7 @@ const Chat = () => {
       const messages = await FetchMessages(null, chatData.id);
 
       dispatch(setChatMessages(messages));
-
+      alert("set chats");
       if (
         chatMessages.messages.length > 0 &&
         chatMessages.messages[0].id !== 0

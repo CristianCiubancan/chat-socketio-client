@@ -36,9 +36,6 @@ const chatMessagesSlice = createSlice({
   initialState,
   reducers: {
     setChatMessages(state, action) {
-      if (typeof window !== undefined) {
-        alert("set chats");
-      }
       state.value = action.payload;
     },
     fetchMoreChatMessages(state, action) {

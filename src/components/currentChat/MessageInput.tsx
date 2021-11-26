@@ -36,6 +36,7 @@ const MessageInput: React.FC<MessageInputProps> = () => {
 
   const handleSendMessage = (message: MessageData) => {
     socket?.emit("message", { message, to: otherUserId, chat });
+    socket?.emit("message-for-me", { message, chat });
   };
 
   return (
@@ -48,11 +49,12 @@ const MessageInput: React.FC<MessageInputProps> = () => {
           if (data.error && data.error === "not authenticated") {
             dispatch(setUserAsGuest());
             router.push("/login");
+          } else {
+            actions.resetForm();
+            dispatch(sendNewMessage(data));
+            dispatch(newMessageSentToChat({ message: data, chat }));
+            handleSendMessage(data);
           }
-          actions.resetForm();
-          dispatch(sendNewMessage(data));
-          dispatch(newMessageSentToChat({ message: data, chat }));
-          handleSendMessage(data);
         }
       }}>
       {({ isSubmitting }) =>

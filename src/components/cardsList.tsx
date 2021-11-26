@@ -115,11 +115,7 @@ const CardsList: React.FC<CardsListProps> = ({
         height="100%"
         width="100%">
         {chatMessages.messages.map((message) => {
-          if (message.id === 0) {
-            return null;
-          } else {
-            return <MessageCard key={message.id} message={message} />;
-          }
+          return <MessageCard key={message.id} message={message} />;
         })}
         <FetchMoreButton chatMessages={chatMessages} />
       </Flex>

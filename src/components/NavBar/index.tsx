@@ -10,12 +10,17 @@ import { SocketContext } from "../../utils/SocketContext";
 import {
   newNotification,
   Notification,
+  removeNotifications,
   setNotifications,
 } from "../../redux/features/notifications/notificationsSlice";
 import { useRouter } from "next/router";
 import ReadMessageOperation from "../../operations/message/readMessage";
 import { sendNewMessage } from "../../redux/features/chatMessages/chatMessagesSlice";
-import { newChatMessageReceived } from "../../redux/features/userChats/userChatsSlice";
+import {
+  newChatMessageReceived,
+  newMessageSentToChat,
+  readChat,
+} from "../../redux/features/userChats/userChatsSlice";
 import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 import FetchUserNotifications from "../../operations/user/fetchNotifications";
 import { setUserAsGuest } from "../../redux/features/user/userSlice";
@@ -59,6 +64,30 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
       : [];
 
   useEffect(() => {
+    socketClient?.on("new-message-sent-by-me", async (message) => {
+      dispatch(sendNewMessage(message.message.message));
+      dispatch(
+        newMessageSentToChat({
+          message: message.message.message,
+          chat: message.message.chat,
+        })
+      );
+    });
+
+    socketClient?.on("new-read-message", async (message) => {
+      dispatch(
+        readChat({
+          chatId: message.message.message.message.chatId,
+          userId: currentUser.id,
+        })
+      );
+      dispatch(
+        removeNotifications({
+          chatId: message.message.message.message.chatId,
+        })
+      );
+    });
+
     socketClient?.on("new-message", async (message) => {
       if (
         router.query.id &&
@@ -74,9 +103,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           router.push("/login");
         } else {
           const messageWithReaders = {
-            id: readMessage.messageId,
-            createdAt: readMessage.createdAt,
-            updatedAt: readMessage.updatedAt,
+            id: message.message.message.id,
+            createdAt: message.message.message.createdAt,
+            updatedAt: message.message.message.updatedAt,
             chatId: message.message.chat.id,
             text: message.message.message.text,
             senderId: message.message.message.senderId,
@@ -85,6 +114,15 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
               { id: message.message.message.senderId },
             ],
           };
+
+          if (readMessage) {
+            socketClient?.emit("read-message", {
+              message: {
+                message: messageWithReaders,
+                chat: message.message.chat,
+              },
+            });
+          }
 
           dispatch(sendNewMessage(messageWithReaders));
 
@@ -128,6 +166,8 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
     return () => {
       socketClient?.off("new-message");
+      socketClient?.off("new-read-message");
+      socketClient?.off("new-message-sent-by-me");
     };
   });
 

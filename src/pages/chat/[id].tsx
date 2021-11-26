@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import CardsList from "../../components/cardsList";
 import CurrentChat from "../../components/currentChat";
 import Layout from "../../components/Layout";
@@ -24,8 +24,11 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { wrapper } from "../../redux/store";
 import { getScreenSize } from "../../utils/getScreenSize";
 import { RefetchOnIdle } from "../../utils/refetchOnIdle";
+import { SocketContext } from "../../utils/SocketContext";
 
 const Chat = () => {
+  const socketClient = useContext(SocketContext);
+
   const windowSize = getScreenSize();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -47,6 +50,12 @@ const Chat = () => {
         if (response.error && response.error === "not authenticated") {
           dispatch(setUserAsGuest());
           router.push("/login");
+        } else {
+          if (response) {
+            socketClient?.emit("read-message", {
+              message: { message: messages.messages[0], chat: chatData },
+            });
+          }
         }
       }
 
@@ -82,6 +91,11 @@ const Chat = () => {
       dispatch(setUserAsGuest());
       router.push("/login");
     } else {
+      if (response) {
+        socketClient?.emit("read-message", {
+          message: { message: chatMessages.messages[0], chat: chatData },
+        });
+      }
       dispatch(readChat({ chatId: chatData.id, userId: currentUser.id }));
       dispatch(removeNotifications({ chatId: chatData.id }));
     }

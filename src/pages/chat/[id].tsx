@@ -39,27 +39,28 @@ const Chat = () => {
     chatMessages: { value: chatMessages },
   } = useAppSelector((state) => state);
 
-  const handleReadMessage = async (messageId: number) => {
-    const response = await ReadMessageOperation(messageId);
-    if (response.error && response.error === "not authenticated") {
-      dispatch(setUserAsGuest());
-      router.push("/login");
-    } else {
-      if (response) {
-        socketClient?.emit("read-message", {
-          message: { message: chatMessages.messages[0], chat: chatData },
-        });
-      }
-      dispatch(readChat({ chatId: chatData.id, userId: currentUser.id }));
-      dispatch(removeNotifications({ chatId: chatData.id }));
-    }
-  };
-
   const handleRefetchOnIdle = async () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
       dispatch(setChatMessages(messages));
+
+      if (
+        chatMessages.messages.length > 0 &&
+        chatMessages.messages[0].id !== 0
+      ) {
+        const response = await ReadMessageOperation(messages.messages[0].id);
+        if (response.error && response.error === "not authenticated") {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        } else {
+          if (response) {
+            socketClient?.emit("read-message", {
+              message: { message: messages.messages[0], chat: chatData },
+            });
+          }
+        }
+      }
 
       const notifications = await FetchUserNotifications();
       if (notifications.error && notifications.error === "not authenticated") {
@@ -85,6 +86,24 @@ const Chat = () => {
     }
   };
 
+  RefetchOnIdle(handleRefetchOnIdle);
+
+  const handleReadMessage = async (messageId: number) => {
+    const response = await ReadMessageOperation(messageId);
+    if (response.error && response.error === "not authenticated") {
+      dispatch(setUserAsGuest());
+      router.push("/login");
+    } else {
+      if (response) {
+        socketClient?.emit("read-message", {
+          message: { message: chatMessages.messages[0], chat: chatData },
+        });
+      }
+      dispatch(readChat({ chatId: chatData.id, userId: currentUser.id }));
+      dispatch(removeNotifications({ chatId: chatData.id }));
+    }
+  };
+
   useEffect(() => {
     if (currentUser.id && currentUser.id !== 0) {
       if (chatMessages.messages[0]) {
@@ -100,8 +119,6 @@ const Chat = () => {
       }
     }
   }, [chatData]);
-
-  RefetchOnIdle(handleRefetchOnIdle);
 
   if (windowSize.width === 0 && windowSize.height === 0) {
     return <Layout></Layout>;

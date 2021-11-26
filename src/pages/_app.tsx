@@ -4,13 +4,14 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { wrapper } from "../redux/store";
 import { getCookie } from "../redux/features/cookie/cookieSlice";
 import fetchAndStoreUser from "../utils/fetchAndStoreUser";
-import React from "react";
+import React, { useEffect } from "react";
 import { Global, css } from "@emotion/react";
 import FetchUserNotifications from "../operations/user/fetchNotifications";
 import { setNotifications } from "../redux/features/notifications/notificationsSlice";
 import { SocketContext, socket } from "../utils/SocketContext";
 import NextNprogress from "nextjs-progressbar";
 import { setUserAsGuest } from "../redux/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const GlobalStyle = ({ children }: any) => {
   return (
@@ -34,6 +35,28 @@ const GlobalStyle = ({ children }: any) => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => state);
+
+  const handleUpdateNotifications = async () => {
+    const notificationsResponse = await FetchUserNotifications();
+    if (
+      notificationsResponse.error &&
+      notificationsResponse.error === "not authenticated"
+    ) {
+      dispatch(setUserAsGuest());
+    } else if (
+      JSON.stringify(notificationsResponse[0]) !==
+      JSON.stringify(state.notifications.value[0])
+    ) {
+      dispatch(setNotifications(notificationsResponse));
+    }
+  };
+
+  useEffect(() => {
+    handleUpdateNotifications();
+  }, []);
+
   return (
     <ChakraProvider>
       <GlobalStyle>

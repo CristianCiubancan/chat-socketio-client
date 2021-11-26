@@ -36,9 +36,11 @@ const chatMessagesSlice = createSlice({
   initialState,
   reducers: {
     setChatMessages(state, action) {
+      alert("set chats");
       state.value = action.payload;
     },
     fetchMoreChatMessages(state, action) {
+      alert("fetched more chats");
       state.value.hasMore = action.payload.hasMore;
       state.value.messages = [
         ...state.value.messages,
@@ -46,9 +48,11 @@ const chatMessagesSlice = createSlice({
       ];
     },
     sendNewMessage(state, action) {
+      alert("sendNewMessage");
       state.value.messages = [action.payload, ...state.value.messages];
     },
     resetMessages(state) {
+      alert("resetMessages");
       state.value = initialState.value;
     },
   },

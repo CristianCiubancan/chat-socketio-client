@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export const RefetchOnIdle = (
   fn: Function,
-  dependency: Array<Object> | null = null
+  dependency: Array<any> | null = null
 ) => {
   const handleOnIdle = async () => {
     if (!document.hidden) {

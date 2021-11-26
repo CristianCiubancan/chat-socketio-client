@@ -60,13 +60,6 @@ const Chat = () => {
       const messages = await FetchMessages(null, chatData.id);
 
       dispatch(setChatMessages(messages));
-      alert("set chats");
-      if (
-        chatMessages.messages.length > 0 &&
-        chatMessages.messages[0].id !== 0
-      ) {
-        await handleReadMessage(messages.messages[0].id);
-      }
 
       const notifications = await FetchUserNotifications();
       if (notifications.error && notifications.error === "not authenticated") {

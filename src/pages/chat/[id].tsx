@@ -42,6 +42,23 @@ const Chat = () => {
   const handleRefetchOnIdle = async () => {
     if (!currentUser || currentUser.id === 0) {
     } else {
+      const messages = await FetchMessages(null, chatData.id);
+      dispatch(setChatMessages(messages));
+
+      if (chatMessages.messages[0] && chatMessages.messages[0].id !== 0) {
+        const response = await ReadMessageOperation(messages.messages[0].id);
+        if (response.error && response.error === "not authenticated") {
+          dispatch(setUserAsGuest());
+          router.push("/login");
+        } else {
+          if (response) {
+            socketClient?.emit("read-message", {
+              message: { message: messages.messages[0], chat: chatData },
+            });
+          }
+        }
+      }
+
       const notifications = await FetchUserNotifications();
       if (notifications.error && notifications.error === "not authenticated") {
         dispatch(setUserAsGuest());
@@ -61,23 +78,6 @@ const Chat = () => {
             chatsResponse.chats[0].lastMessage.cursor
         ) {
           dispatch(setChats(chatsResponse));
-        }
-      }
-
-      const messages = await FetchMessages(null, chatData.id);
-      dispatch(setChatMessages(messages));
-
-      if (chatMessages.messages[0] && chatMessages.messages[0].id !== 0) {
-        const response = await ReadMessageOperation(messages.messages[0].id);
-        if (response.error && response.error === "not authenticated") {
-          dispatch(setUserAsGuest());
-          router.push("/login");
-        } else {
-          if (response) {
-            socketClient?.emit("read-message", {
-              message: { message: messages.messages[0], chat: chatData },
-            });
-          }
         }
       }
     }

@@ -70,13 +70,13 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         parseInt(router.query.id as string) === message.message.chat.id
       ) {
         dispatch(sendNewMessage(message.message.message));
-        dispatch(
-          newMessageSentToChat({
-            message: message.message.message,
-            chat: message.message.chat,
-          })
-        );
       }
+      dispatch(
+        newMessageSentToChat({
+          message: message.message.message,
+          chat: message.message.chat,
+        })
+      );
     });
 
     socketClient?.on("new-read-message", async (message) => {

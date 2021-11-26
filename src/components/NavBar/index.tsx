@@ -54,7 +54,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         dispatch(setNotifications(notifications));
       }
     }
-  }, notifications);
+  }, [notifications]);
 
   const actualNotifications =
     notifications && currentUser.id && currentUser.id !== 0

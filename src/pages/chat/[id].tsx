@@ -83,7 +83,7 @@ const Chat = () => {
     }
   };
 
-  RefetchOnIdle(handleRefetchOnIdle, chats);
+  RefetchOnIdle(handleRefetchOnIdle);
 
   const handleReadMessage = async (messageId: number) => {
     const response = await ReadMessageOperation(messageId);

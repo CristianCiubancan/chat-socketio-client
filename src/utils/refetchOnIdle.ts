@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export const RefetchOnIdle = (
   fn: Function,
-  dependency: Object | Array<Object> | null = null
+  dependency: Array<Object> | null = null
 ) => {
   const handleOnIdle = async () => {
     if (!document.hidden) {
@@ -17,6 +17,6 @@ export const RefetchOnIdle = (
         document.removeEventListener("visibilitychange", handleOnIdle);
       };
     },
-    dependency ? [dependency] : []
+    dependency ? [...dependency] : []
   );
 };

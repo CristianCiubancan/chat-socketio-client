@@ -44,15 +44,13 @@ const Chat = () => {
       const messages = await FetchMessages(null, chatData.id);
 
       const notifications = await FetchUserNotifications();
-
-      const chatsResponse = await FetchUserChats();
-
       if (notifications.error && notifications.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
       } else {
         dispatch(setNotifications(notifications));
       }
+      const chatsResponse = await FetchUserChats();
 
       if (chatsResponse.error && chatsResponse.error === "not authenticated") {
         dispatch(setUserAsGuest());

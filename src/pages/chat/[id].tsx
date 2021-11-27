@@ -45,44 +45,44 @@ const Chat = () => {
 
       dispatch(setChatMessages(messages));
 
-      if (
-        chatMessages.messages.length > 0 &&
-        chatMessages.messages[0].id !== 0
-      ) {
-        const response = await ReadMessageOperation(messages.messages[0].id);
-        if (response.error && response.error === "not authenticated") {
-          dispatch(setUserAsGuest());
-          router.push("/login");
-        } else {
-          if (response) {
-            socketClient?.emit("read-message", {
-              message: { message: messages.messages[0], chat: chatData },
-            });
-          }
-        }
-      }
+      // if (
+      //   chatMessages.messages.length > 0 &&
+      //   chatMessages.messages[0].id !== 0
+      // ) {
+      //   const response = await ReadMessageOperation(messages.messages[0].id);
+      //   if (response.error && response.error === "not authenticated") {
+      //     dispatch(setUserAsGuest());
+      //     router.push("/login");
+      //   } else {
+      //     if (response) {
+      //       socketClient?.emit("read-message", {
+      //         message: { message: messages.messages[0], chat: chatData },
+      //       });
+      //     }
+      //   }
+      // }
 
-      const notifications = await FetchUserNotifications();
-      if (notifications.error && notifications.error === "not authenticated") {
-        dispatch(setUserAsGuest());
-        router.push("/login");
-      }
-      dispatch(setNotifications(notifications));
+      // const notifications = await FetchUserNotifications();
+      // if (notifications.error && notifications.error === "not authenticated") {
+      //   dispatch(setUserAsGuest());
+      //   router.push("/login");
+      // }
+      // dispatch(setNotifications(notifications));
 
-      const chatsResponse = await FetchUserChats();
-      if (chatsResponse.error && chatsResponse.error === "not authenticated") {
-        dispatch(setUserAsGuest());
-        router.push("/login");
-      } else {
-        if (
-          chats.chats[0] &&
-          chatsResponse.chats[0] &&
-          chats.chats[0].lastMessage.cursor !==
-            chatsResponse.chats[0].lastMessage.cursor
-        ) {
-          dispatch(setChats(chatsResponse));
-        }
-      }
+      // const chatsResponse = await FetchUserChats();
+      // if (chatsResponse.error && chatsResponse.error === "not authenticated") {
+      //   dispatch(setUserAsGuest());
+      //   router.push("/login");
+      // } else {
+      //   if (
+      //     chats.chats[0] &&
+      //     chatsResponse.chats[0] &&
+      //     chats.chats[0].lastMessage.cursor !==
+      //       chatsResponse.chats[0].lastMessage.cursor
+      //   ) {
+      //     dispatch(setChats(chatsResponse));
+      //   }
+      // }
     }
   };
 

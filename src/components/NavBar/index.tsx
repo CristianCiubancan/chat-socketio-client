@@ -94,6 +94,8 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     });
 
     socketClient?.on("new-message", async (message) => {
+      console.log(router.query.id);
+
       if (
         router.query.id &&
         parseInt(router.query.id as string) === message.message.message.chatId

@@ -91,6 +91,7 @@ const Chat = () => {
     }
 
     if (visibility === "visible") {
+      socketClient?.connect();
       handleRefetchOnIdle();
     }
   }, [visibility]);

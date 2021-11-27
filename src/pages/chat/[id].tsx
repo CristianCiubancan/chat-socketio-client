@@ -44,12 +44,7 @@ const Chat = () => {
       const messages = await FetchMessages(null, chatData.id);
 
       const notifications = await FetchUserNotifications();
-      if (notifications.error && notifications.error === "not authenticated") {
-        dispatch(setUserAsGuest());
-        router.push("/login");
-      } else {
-        dispatch(setNotifications(notifications));
-      }
+
       const chatsResponse = await FetchUserChats();
 
       if (chatsResponse.error && chatsResponse.error === "not authenticated") {
@@ -67,6 +62,13 @@ const Chat = () => {
       }
 
       dispatch(setChatMessages(messages));
+
+      if (notifications.error && notifications.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      } else {
+        dispatch(setNotifications(notifications));
+      }
     }
   };
 

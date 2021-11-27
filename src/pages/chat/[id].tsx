@@ -24,7 +24,6 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { wrapper } from "../../redux/store";
 import { getScreenSize } from "../../utils/getScreenSize";
 import getVisibility from "../../utils/getVisibilityState";
-import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 import { SocketContext } from "../../utils/SocketContext";
 
 const Chat = () => {

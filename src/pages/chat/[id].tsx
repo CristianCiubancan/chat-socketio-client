@@ -102,7 +102,7 @@ const Chat = () => {
         }
       }
     }
-  }, [chatData, chatMessages]);
+  }, [chatData]);
 
   if (windowSize.width === 0 && windowSize.height === 0) {
     return <Layout></Layout>;

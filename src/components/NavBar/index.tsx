@@ -21,9 +21,9 @@ import {
   newMessageSentToChat,
   readChat,
 } from "../../redux/features/userChats/userChatsSlice";
-import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 import FetchUserNotifications from "../../operations/user/fetchNotifications";
 import { setUserAsGuest } from "../../redux/features/user/userSlice";
+import getVisibility from "../../utils/getVisibilityState";
 
 interface NavBarProps {}
 
@@ -34,12 +34,14 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   const dispatch = useAppDispatch();
   const socketClient = useContext(SocketContext);
 
+  const visibility = getVisibility();
+
   const {
     user: { value: currentUser },
     notifications: { value: notifications },
   } = useAppSelector((state) => state);
 
-  RefetchOnIdle(async () => {
+  const handleRefetchOnIdle = async () => {
     if (router.query.id) {
     } else {
       if (currentUser.id && currentUser.id !== 0) {
@@ -54,7 +56,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         dispatch(setNotifications(notifications));
       }
     }
-  }, [notifications]);
+  };
+
+  useEffect(() => {
+    handleRefetchOnIdle();
+  }, [visibility]);
 
   const actualNotifications =
     notifications && currentUser.id && currentUser.id !== 0

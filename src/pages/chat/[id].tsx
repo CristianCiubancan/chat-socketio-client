@@ -23,11 +23,14 @@ import {
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { wrapper } from "../../redux/store";
 import { getScreenSize } from "../../utils/getScreenSize";
+import getVisibility from "../../utils/getVisibilityState";
 import { RefetchOnIdle } from "../../utils/refetchOnIdle";
 import { SocketContext } from "../../utils/SocketContext";
 
 const Chat = () => {
   const socketClient = useContext(SocketContext);
+
+  const visibility = getVisibility();
 
   const windowSize = getScreenSize();
   const dispatch = useAppDispatch();
@@ -82,7 +85,11 @@ const Chat = () => {
     }
   };
 
-  RefetchOnIdle(handleRefetchOnIdle);
+  useEffect(() => {
+    if (visibility === "visible") {
+      handleRefetchOnIdle();
+    }
+  }, [visibility]);
 
   const handleReadMessage = async (messageId: number) => {
     const response = await ReadMessageOperation(messageId);

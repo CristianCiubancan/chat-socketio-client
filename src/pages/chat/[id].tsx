@@ -43,8 +43,6 @@ const Chat = () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
-      dispatch(setChatMessages(messages));
-
       // if (
       //   chatMessages.messages.length > 0 &&
       //   chatMessages.messages[0].id !== 0
@@ -83,6 +81,8 @@ const Chat = () => {
           dispatch(setChats(chatsResponse));
         }
       }
+
+      dispatch(setChatMessages(messages));
     }
   };
 

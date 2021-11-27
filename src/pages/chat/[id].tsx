@@ -62,27 +62,27 @@ const Chat = () => {
       //   }
       // }
 
-      // const notifications = await FetchUserNotifications();
-      // if (notifications.error && notifications.error === "not authenticated") {
-      //   dispatch(setUserAsGuest());
-      //   router.push("/login");
-      // }
-      // dispatch(setNotifications(notifications));
+      const notifications = await FetchUserNotifications();
+      if (notifications.error && notifications.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      }
+      dispatch(setNotifications(notifications));
 
-      // const chatsResponse = await FetchUserChats();
-      // if (chatsResponse.error && chatsResponse.error === "not authenticated") {
-      //   dispatch(setUserAsGuest());
-      //   router.push("/login");
-      // } else {
-      //   if (
-      //     chats.chats[0] &&
-      //     chatsResponse.chats[0] &&
-      //     chats.chats[0].lastMessage.cursor !==
-      //       chatsResponse.chats[0].lastMessage.cursor
-      //   ) {
-      //     dispatch(setChats(chatsResponse));
-      //   }
-      // }
+      const chatsResponse = await FetchUserChats();
+      if (chatsResponse.error && chatsResponse.error === "not authenticated") {
+        dispatch(setUserAsGuest());
+        router.push("/login");
+      } else {
+        if (
+          chats.chats[0] &&
+          chatsResponse.chats[0] &&
+          chats.chats[0].lastMessage.cursor !==
+            chatsResponse.chats[0].lastMessage.cursor
+        ) {
+          dispatch(setChats(chatsResponse));
+        }
+      }
     }
   };
 
@@ -118,7 +118,7 @@ const Chat = () => {
         }
       }
     }
-  }, [chatData]);
+  }, [chatData, chatMessages]);
 
   if (windowSize.width === 0 && windowSize.height === 0) {
     return <Layout></Layout>;

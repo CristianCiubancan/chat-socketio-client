@@ -102,7 +102,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         const readMessage = await ReadMessageOperation(
           message.message.message.id
         );
-
+        console.log("message read from socketClient-new-message  on chat page");
         if (readMessage.error && readMessage.error === "not authenticated") {
           dispatch(setUserAsGuest());
           router.push("/login");

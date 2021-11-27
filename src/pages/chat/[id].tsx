@@ -43,7 +43,7 @@ const Chat = () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
-      const response = await ReadMessageOperation(messages.message[0]);
+      const response = await ReadMessageOperation(messages.messages[0].id);
       if (response.error && response.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
@@ -53,6 +53,7 @@ const Chat = () => {
             message: { message: messages.messages[0], chat: chatData },
           });
         }
+      }
 
       const notifications = await FetchUserNotifications();
       if (notifications.error && notifications.error === "not authenticated") {

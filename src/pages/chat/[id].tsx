@@ -45,11 +45,7 @@ const Chat = () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
-      console.log(chatData.id);
-      console.log(messages.messages[0].id);
-
       const response = await ReadMessageOperation(messages.messages[0].id);
-      console.log("message read from handleRefetchOnIdle on chat page");
       if (response.error && response.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
@@ -101,7 +97,6 @@ const Chat = () => {
 
   const handleReadMessage = async (messageId: number) => {
     const response = await ReadMessageOperation(messageId);
-    console.log("message read from handleReadMessage on chat page");
     if (response.error && response.error === "not authenticated") {
       dispatch(setUserAsGuest());
       router.push("/login");

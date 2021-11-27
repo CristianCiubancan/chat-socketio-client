@@ -86,6 +86,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    if (visibility === "hidden") {
+      socketClient?.disconnect();
+    }
+
     if (visibility === "visible") {
       handleRefetchOnIdle();
     }

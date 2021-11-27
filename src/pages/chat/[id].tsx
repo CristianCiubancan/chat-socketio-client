@@ -43,31 +43,19 @@ const Chat = () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
-      // if (
-      //   chatMessages.messages.length > 0 &&
-      //   chatMessages.messages[0].id !== 0
-      // ) {
-      //   const response = await ReadMessageOperation(messages.messages[0].id);
-      //   if (response.error && response.error === "not authenticated") {
-      //     dispatch(setUserAsGuest());
-      //     router.push("/login");
-      //   } else {
-      //     if (response) {
-      //       socketClient?.emit("read-message", {
-      //         message: { message: messages.messages[0], chat: chatData },
-      //       });
-      //     }
-      //   }
-      // }
-
       const notifications = await FetchUserNotifications();
+
+      const chatsResponse = await FetchUserChats();
+
+      dispatch(setChatMessages(messages));
+
       if (notifications.error && notifications.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
+      } else {
+        dispatch(setNotifications(notifications));
       }
-      dispatch(setNotifications(notifications));
 
-      const chatsResponse = await FetchUserChats();
       if (chatsResponse.error && chatsResponse.error === "not authenticated") {
         dispatch(setUserAsGuest());
         router.push("/login");
@@ -81,8 +69,6 @@ const Chat = () => {
           dispatch(setChats(chatsResponse));
         }
       }
-
-      dispatch(setChatMessages(messages));
     }
   };
 

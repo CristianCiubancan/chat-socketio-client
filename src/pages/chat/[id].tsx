@@ -45,6 +45,8 @@ const Chat = () => {
     if (currentUser.id !== 0 && currentUser) {
       const messages = await FetchMessages(null, chatData.id);
 
+      console.log(chatData.id);
+
       const response = await ReadMessageOperation(messages.messages[0].id);
       if (response.error && response.error === "not authenticated") {
         dispatch(setUserAsGuest());

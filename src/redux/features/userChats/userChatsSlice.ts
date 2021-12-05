@@ -68,7 +68,7 @@ const userChatsSlice = createSlice({
       }
     },
     newMessageSentToChat(state, action) {
-      if (state.value.chats[0].id !== 0) {
+      if (!state.value.chats[0] || state.value.chats[0].id !== 0) {
         const newMessage = action.payload.message;
         const otherChats = current(state.value).chats.filter(
           (obj) => obj.id !== newMessage.chatId

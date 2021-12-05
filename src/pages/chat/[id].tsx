@@ -42,7 +42,7 @@ const Chat = () => {
   } = useAppSelector((state) => state);
 
   const handleRefetchOnIdle = async () => {
-    if (currentUser.id !== 0 && currentUser) {
+    if (currentUser.id !== 0 && currentUser.id) {
       const messages = await FetchMessages(null, chatData.id);
 
       const response = await ReadMessageOperation(messages.messages[0].id);
